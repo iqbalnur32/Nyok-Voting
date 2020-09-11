@@ -53,7 +53,7 @@
 						<div class="col-lg-12">
 							<div class="form-group">
 								<label class="text-dark">ID Voting</label>
-								<input class="form-control" type="number" name="id_voting" id="id_voting" placeholder="12002xx" style="border-radius: 20px;">
+								<input class="form-control" type="text" name="id_voting" id="id_voting" placeholder="12002xx" style="border-radius: 20px;">
 								{{-- <span id="titleError" class="alert-message"></span> --}}
 								<small style="color: red">* Masukan ID Voting Untuk Melakukan Voting</small>
 							</div>	

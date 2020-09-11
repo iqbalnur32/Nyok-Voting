@@ -32,14 +32,14 @@ class VotingController extends Controller
 
     public function searchIDVote(Request $request)
     {
-        $message = [
-            'required' => 'ID Harus Di Isi',
-            'min' => ':attribute harus diisi minimal :min karakter !'
-        ];
+        // $message = [
+        //     'required' => 'ID Harus Di Isi',
+        //     'min' => ':attribute harus diisi minimal :min karakter !'
+        // ];
 
-        $this->validate($request, [
-            'id_voting' => 'required|string|min:5',
-        ], $message);
+        // $this->validate($request, [
+        //     'id_voting' => 'required|string|min:5',
+        // ], $message);
 
         $data = CreateVoting::where('id_voting', $request->input('id_voting'))->first();
         $multi = MultiVote::where('id_multi', $request->input('id_voting'))->first(); 
