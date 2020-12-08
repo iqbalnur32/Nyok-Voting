@@ -150,39 +150,38 @@
                   </div>
                 @endif
 
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                  <ul>
-                    @foreach ($errors->all() as $error)
-                    <li><strong>{{ $error }}</strong></li>
-                    @endforeach
-                  </ul>
-                </div>
-                @endif
-
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Username" type="text" name="username">
+                    <input class="form-control @error('username') is-invalid @enderror" value="{{ old('username') }}" placeholder="Username" type="text" name="username">
                   </div>
+                  @error('username')
+                      <div class="alert alert-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" name="email">
+                    <input class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" placeholder="Email" type="email" name="email">
                   </div>
+                  @error('email')
+                      <div class="alert alert-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" name="password">
-                  </div>
+                    <input class="form-control @error('password') is-invalid @enderror" placeholder="Password" type="password" name="password">
+                  </div><br>
+                  @error('password')
+                      <div class="alert alert-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div>
                 <div class="row my-4">

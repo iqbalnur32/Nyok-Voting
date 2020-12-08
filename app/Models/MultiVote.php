@@ -14,6 +14,7 @@ class MultiVote extends Authenticatable
     // use SoftDeletes;
     
     protected $table = "multi_vote";
+    protected $primaryKey = "id_multi";
     public $incrementing = false;
 
     public function category_voting()

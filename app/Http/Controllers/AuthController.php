@@ -29,29 +29,6 @@ class AuthController extends Controller
 	}
 
 	/*
-		Validasi Login
-	*/
-		public function validasiLogin()
-		{
-			return [
-				'email' => 'required|max:225',
-				'password' => 'required'
-			]; 
-		}
-
-	/*
-		Validasi Register
-	*/
-		public function validasiRegister()
-		{
-			return [
-				'username' => 'required|max:225',
-				'email' => 'required|unique:users_voting|max:255',
-				'password' => 'required'
-			]; 
-		}
-
-	/*
 	* 	Login Process
 	*/
 	public function loginProcess(Request $request)
@@ -60,7 +37,10 @@ class AuthController extends Controller
 
 		try {
 
-			$this->validate($request, $this->validasiLogin());
+			$this->validate($request, [
+				'email' => 'required|max:225',
+				'password' => 'required'
+			]);
 
 			$where_admin = [
 				'email' => $request->email,
@@ -110,26 +90,28 @@ class AuthController extends Controller
 		public function registerProcess(Request $request)
 		{
 			date_default_timezone_set('Asia/Jakarta');
-			try {
+			
+			$request->validate( 
+				[
+					'username' => 'required|max:225',
+					'email' => 'required|unique:users_voting|max:255',
+					'password' => 'required'
+				],
+				[	
+					'email:unique' => 'Upsss Account is ready please login'
+				]
+			);
 
-				$this->validate($request, $this->validasiRegister());
+			$register = new Users;
+			$register->username = $request->username;
+			$register->email = $request->email;
+			$register->password = Hash::make($request->password);
+			$register->level_id = 2;
+			$register->status = 'tidak_aktif';
+			$register->last_login = date("Y-m-d");
+			$register->save();
 
-				$register = new Users;
-				$register->username = $request->username;
-				$register->email = $request->email;
-				$register->password = Hash::make($request->password);
-				$register->level_id = 2;
-				$register->status = 'tidak_aktif';
-				$register->last_login = date("Y-m-d");
-				$register->save();
-
-				return redirect('/login');
-
-			} catch (Exception $e) {
-
-				Session::flash('gagal', 'Gagal Melakukan Register');
-				return redirect('/register');
-			}
+			return redirect('/login');
 		}
 
 	/*

@@ -146,16 +146,6 @@
                 </div>
               @endif
 
-              @if (count($errors) > 0)
-              <div class="alert alert-danger">
-                <ul>
-                  @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-              @endif
-
               <form method="POST" action="{{ route('loginProcess') }}" role="form">
                 @csrf
                 <div class="form-group mb-3">
@@ -163,16 +153,22 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" name="email">
-                  </div>
+                    <input class="form-control @error('password') is-invalid @enderror" value="{{ old('email') }}" placeholder="Email" type="email" name="email">
+                  </div><br>
+                  @error('email')
+                      <div class="alert alert-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" name="password">
-                  </div>
+                    <input class="form-control @error('password') is-invalid @enderror" placeholder="Password" type="password" name="password">
+                  </div><br>
+                  @error('password')
+                      <div class="alert alert-danger">{{ $message }}</div>
+                  @enderror
                 </div>
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary my-4">Sign in</button>

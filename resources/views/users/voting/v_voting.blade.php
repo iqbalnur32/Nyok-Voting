@@ -92,11 +92,12 @@
 						<strong>{{ session('gagal') }}</strong>
 					</div>
 					@endif
+
 					<div class="row">
 						<div class="col-xl-12">
 							<div class="form-group">
 								<label>Title</label>
-								<input class="form-control" type="text" name="title" required>
+								<input class="form-control" type="text" name="title" value="{{ old('title') }}" required>
 							</div>
 							<div class="form-group">
 								<label>Image</label>
@@ -114,7 +115,7 @@
 							</div>
 							<div class="form-group">
 								<label>Description</label>
-								<textarea class="form-control" name="description" required></textarea> 
+								<textarea class="form-control" name="description" value="{{ old('description') }}" required></textarea> 
 							</div>
 							<div class="float-right">
 								<button type="submit" class="btn btn-primary btn-sm">Submit</button>

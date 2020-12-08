@@ -19,9 +19,9 @@
 			</div>
 			<div class="card-body">
 				@if($count_voting_multi === 1)
-					<div class="count_vote">
+					{{-- <div class="count_vote">
 						
-					</div>
+					</div> --}}
 				@else 
 					<h2 class="text-center">{{ $voting_multi->title }}</h2>
 					<hr style="border: 1px solid; width: 50%;">
@@ -46,7 +46,7 @@
 									@csrf
 									<div class="text-center">
 										<input class="form-control" type="hidden" name="pilihan" value="{{ $name }}">
-										<input class="form-control" type="number" name="id_multi" placeholder="Inputkan ID Vote Anda Sesuai Vote Anda">
+										<input class="form-control" type="text" name="id_multi" placeholder="Inputkan ID Vote Anda Sesuai Vote Anda">
 										<div class="buttom" style="margin-bottom: 12px;"></div>
 										<button class="btn btn-primary btn-sm">Pilih</button>
 									</div>
@@ -64,7 +64,6 @@
 @endsection
 
 @section('javascript')
-@section('javascript')
 <script type="text/javascript">
 	$(document).ready(function () {
 
@@ -81,5 +80,4 @@
 		})
 	})
 </script>
-@endsection
 @endsection

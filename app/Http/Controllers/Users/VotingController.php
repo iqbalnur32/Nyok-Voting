@@ -22,37 +22,31 @@ class VotingController extends Controller
     private function getRand($length)
     {
         $result = '';
-
         for($i = 0; $i < $length; $i++) {
             $result .= mt_rand(0, 9);
         }
-
         return $result;
     }
 
     public function searchIDVote(Request $request)
     {
-        // $message = [
-        //     'required' => 'ID Harus Di Isi',
-        //     'min' => ':attribute harus diisi minimal :min karakter !'
-        // ];
+        /*$message = [
+            'required' => 'ID Harus Di Isi',
+            'min' => ':attribute harus diisi minimal :min karakter !'
+        ];
 
-        // $this->validate($request, [
-        //     'id_voting' => 'required|string|min:5',
-        // ], $message);
+        $this->validate($request, [
+            'id_voting' => 'required|string|min:5',
+        ], $message);*/
 
         $data = CreateVoting::where('id_voting', $request->input('id_voting'))->first();
         $multi = MultiVote::where('id_multi', $request->input('id_voting'))->first(); 
 
         if ($data) {
-
             return response()->json(['code' => 200, 'status' => 'vote_personal' ,'data' => $data]);
-
         } elseif($multi) {
-
             return response()->json(['code' => 200, 'status' => 'vote_multi' ,'data_multi' => $multi]);
         } else {
-
             return response()->json(['code' => 401, 'erorr' => 'Data Tidak Ditemukan']);
         }
     }
@@ -91,29 +85,23 @@ class VotingController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
         $date = date('Y-m-d H:i:s');
-        try {
+        
+        $avatar = Str::random(9);
+        $request->file('img')->move(storage_path('images'), $avatar);
 
-            $avatar = Str::random(9);
-            $request->file('img')->move(storage_path('images'), $avatar);
+        $create_voting = array(
+            'id_voting' => $this->getRand(10), 
+            'id_users' => Auth::guard('user')->user()->id_users,
+            'id_category' => $request->id_category,
+            'title' => $request->title,
+            'img' => $avatar,
+            'description' => $request->description,
+            'created_at' => $date,
+            'updated_at' => $date
+        );
 
-            $create_voting = array(
-                'id_voting' => $this->getRand(10), 
-                'id_users' => Auth::guard('user')->user()->id_users,
-                'id_category' => $request->id_category,
-                'title' => $request->title,
-                'img' => $avatar,
-                'description' => $request->description,
-                'created_at' => $date,
-                'updated_at' => $date
-            );
-
-            CreateVoting::insert($create_voting);
-            return redirect()->back()->with('success', 'Berhasil Menambahkan Voting');
-
-        } catch (Exception $e) {
-
-            return redirect()->back()->with('gagal', 'Gagal Menambahkan Voting');
-        }
+        CreateVoting::insert($create_voting);
+        return redirect()->back()->with('success', 'Berhasil Menambahkan Voting');
     }
 
     /**
@@ -239,20 +227,19 @@ class VotingController extends Controller
 
         $count_voting_multi = MultiVote::with('category_voting')->where('id_users', Auth::guard('user')->user()->id_users)->where('id_multi', $id_voting)->count();
         
+        // print_r($count_voting_multi); die();
+
         return view('users.v_voting_multi', compact('voting_multi', 'count_voting_multi'));
     }
 
     public function MultiVoteProcess(Request $request)
     {
         try {
-
             $jwbn_multi = new JawabanMulti();
             $jwbn_multi->id_multi = $request->id_multi;
             $jwbn_multi->id_users = Auth::guard('user')->user()->id_users;
             $jwbn_multi->point = $request->pilihan;
             $jwbn_multi->save();
-
-            // echo "berhasil";
 
             return redirect()->back();
 
@@ -264,21 +251,22 @@ class VotingController extends Controller
 
     public function MultiVoteDelete($id_multi)
     {
-        $delete_multi = MultiVote::where('id_multi', $id_multi)->first();
+        $delete_multi = MultiVote::find($id_multi);
 
-        if (public_path() . '/images/'. $delete_multi->candidate_img1) {
-            // unlink(public_path() . '/images/'. $delete_multi->candidate_img1);
+        /* Delete Image */
+        $labels = [];
+        foreach (json_decode($delete_multi->candidate_img1) as $key => $value) {
+            $image_path = public_path().'/images/';
+            $labels[] = [
+                'img' => unlink($image_path.$value)
+            ];
+        }
 
-            $filname = array($delete_multi->candidate_img1);
-
-            foreach ($filname as $key => $value) {
-                File::delete(public_path() . '/images/' . $value);
-                // dd($data); die();
-            }
-            echo "berhasil";
-
-        } else {
-            echo "data kosong";
+        if (is_array($labels)) {
+            $delete_multi->delete();
+            return redirect()->back();
+        }else{
+            print_r('gagal');
         }
     }
 
@@ -292,27 +280,27 @@ class VotingController extends Controller
         return response($file, 200)->header('Content-Type', 'image/jpeg');
     }
 
-    return "Data File Tidak Di Temukan";
-}
+        return "Data File Tidak Di Temukan";
+    }
 
     // Static Vote
-public function StaticVoting($id_voting)
-{
+    public function StaticVoting($id_voting)
+    {
 
-    $static_data = DB::table('jawaban_voting')->select(['jawaban',  DB::raw('count(*) as value')])
-    ->join('create_voting', 'jawaban_voting.id_voting', '=', 'create_voting.id_voting')
-    ->groupBy('jawaban')
-    ->where('jawaban_voting.id_voting', $id_voting)
-    ->get();
+        $static_data = DB::table('jawaban_voting')->select(['jawaban',  DB::raw('count(*) as value')])
+        ->join('create_voting', 'jawaban_voting.id_voting', '=', 'create_voting.id_voting')
+        ->groupBy('jawaban')
+        ->where('jawaban_voting.id_voting', $id_voting)
+        ->get();
 
         // print_r($static_data);  die();
-    return response()->json([
-        'code' => 200,
-        'opsi' => ['setuju', 'tidak_setuju'],
-        'data' => $static_data
-    ]);
+        return response()->json([
+            'code' => 200,
+            'opsi' => ['setuju', 'tidak_setuju'],
+            'data' => $static_data
+        ]);
 
-        // https://mazinahmed.net/blog/hacking-zoom/
-        // https://www.youtube.com/watch?v=QkOpUN-S3Y0&feature=youtu.be
-}
+            // https://mazinahmed.net/blog/hacking-zoom/
+            // https://www.youtube.com/watch?v=QkOpUN-S3Y0&feature=youtu.be
+    }
 }

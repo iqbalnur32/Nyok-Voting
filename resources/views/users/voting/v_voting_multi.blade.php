@@ -41,7 +41,7 @@
 								<div class="col-xl-6">
 									<div class="form-group">
 										<label>Title</label>
-										<input class="form-control" type="text" name="title" required="">
+										<input class="form-control" type="text" name="title" required="" value="{{ old('title') }}">
 									</div>
 									<div class="form-group">
 										<label>Candidate Name</label>
@@ -90,7 +90,7 @@
 							</div>
 							<div class="form-group">
 								<label>Description</label>
-								<textarea class="form-control" name="description" required=""></textarea> 
+								<textarea class="form-control" name="description" required="" value="{{ old('description') }}"></textarea> 
 							</div>
 							<div class="float-right">
 								<button type="submit" class="btn btn-primary btn-sm">Submit</button>
@@ -206,12 +206,12 @@
 			$('#myModal').modal('show');
 		});
 
-		// Multi Candidate Img Appen Input
+		// Multi Candidate Img Append Input
 		$('#btn-input-multi-img').click(function() {
 			$('.clone-img').append('<div class="input-group input-img" style="margin-top:10px"><input class="form-control" type="file" name="candidate_img1[]"><br><div class="input-group-append"> <button class="btn btn-outline-danger" type="button">Remove</button></div></div>');
 		})
 
-		// Multi Candidate Name Appen Input
+		// Multi Candidate Name Append Input
 		$('#btn-input-multi-candidate').click(function() {
 			$('.clone').append('<div class="input-group" style="margin-top:10px"><input class="form-control" type="text" name="candidate_name1[]" placeholder="Candidate 1" required=""><div class="input-group-append"><button class="btn btn-outline-danger" type="button">Remove</button></div></div>');
 		})
